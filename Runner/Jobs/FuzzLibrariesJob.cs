@@ -228,10 +228,12 @@ internal sealed partial class FuzzLibrariesJob : JobBase
         {
             await ZipAndUploadArtifactAsync(inputsDirectory, inputsDirectory);
 
+            string projectDirectory = Path.GetFullPath($"{DeploymentPath}/../");
             await RunProcessAsync(
                 "powershell.exe",
-                $"-File \"{DeploymentPath}/../collect-coverage.ps1\" {fuzzerName} {inputsDirectory} -OutputDir {coverageDirectory}",
+                $"-File collect-coverage.ps1 {fuzzerName} {inputsDirectory} -OutputDir {coverageDirectory}",
                 logPrefix: $"{nameWithoutFuzzerSuffix} coverage",
+                workDir: projectDirectory,
                 checkExitCode: false);
 
             await ZipAndUploadArtifactAsync(coverageDirectory, coverageDirectory);
